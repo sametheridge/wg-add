@@ -46,13 +46,13 @@ for i in $(seq 1 $NUM)
 do
   priv=$(wg genkey)
   pub=$(echo $priv | wg pubkey)
-  ip=$(($i + $OFFSET))
+  ip=$(($i + $OFFSET + 1))
 
-  cp templates/client conf/client$ip
-  perl -p -i -e "s#%PRIV%#$priv#g" conf/client$ip
-  perl -p -i -e "s/%IP%/$ip/g" conf/client$ip
-  perl -p -i -e "s/%SERVER_ENDPOINT%/$SERVER_ENDPOINT/g" conf/client$ip
-  perl -p -i -e "s#%SERVER_PUBLIC_KEY%#$SERVER_PUBLIC_KEY#g" conf/client$ip
+  cp templates/client conf/client.$ip
+  perl -p -i -e "s#%PRIV%#$priv#g" conf/client.$ip
+  perl -p -i -e "s/%IP%/$ip/g" conf/client.$ip
+  perl -p -i -e "s/%SERVER_ENDPOINT%/$SERVER_ENDPOINT/g" conf/client.$ip
+  perl -p -i -e "s#%SERVER_PUBLIC_KEY%#$SERVER_PUBLIC_KEY#g" conf/client.$ip
 
   cat templates/server-peer > conf/server-new-peer
   perl -p -i -e "s#%PUB%#$pub#g" conf/server-new-peer
