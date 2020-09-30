@@ -3,4 +3,4 @@ Features:
 - Generates server keys, if not provided
 
 Usage:
-wg-add <number of clients to add>
+./wg-add [number of clients to add]
