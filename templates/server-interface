@@ -1,0 +1,5 @@
+[Interface]
+Address = 10.10.0.1/24
+PrivateKey = $priv
+ListenPort = 51820
+

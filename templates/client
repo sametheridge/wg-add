@@ -1,0 +1,8 @@
+[Interface]
+Address = 10.10.0.%IP%/24
+PrivateKey = %PRIV%
+
+[Peer]
+PublicKey = 32Jg+c0kQO9a69wMi4U6CAkmVYoKemCfOHMIvfSaKGM=
+AllowedIPs = 10.10.0.0/24
+Endpoint = myschoollunch.co.nz:51820

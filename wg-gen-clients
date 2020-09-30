@@ -1,0 +1,55 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]
+  then
+    echo "usage: wg-gen-clients <number>"
+    exit 1
+fi
+
+NUM=$1
+
+if ! [ -f _settings ]; then
+  spriv=$(wg genkey)
+  spub=$(echo $spriv | wg pubkey)
+  echo "Server endpoint (eg. server.com:21700):"
+  read sendp
+  echo "SERVER_ENDPOINT=$sendp
+SERVER_PRIVATE_KEY=$spriv
+SERVER_PUBLIC_KEY=$spub
+" > _settings
+fi
+
+source _settings
+
+if [ -f conf/.offset ]
+  then
+  OFFSET=$(cat conf/offset)
+else
+  OFFSET=0
+fi
+
+echo generating clients: $NUM offset: $OFFSET
+
+[ -d conf ] || mkdir conf
+
+[ -f conf/server ] || cat templates/server-interface >> conf/server
+
+for i in $(seq 1 $NUM)
+do
+  priv=$(wg genkey)
+  pub=$(echo $priv | wg pubkey)
+  ip=$(($i + $OFFSET))
+
+  cp templates/client conf/client$ip
+  perl -p -i -e "s#%PRIV%#$priv#g" conf/client$ip
+  perl -p -i -e "s/%IP%/$ip/g" conf/client$ip
+
+  cat templates/server-peer > conf/server-new-peer
+  perl -p -i -e "s#%PUB%#$pub#g" conf/server-new-peer
+  perl -p -i -e "s/%IP%/$ip/g" conf/server-new-peer
+  cat conf/server-new-peer >> conf/server
+done
+
+echo $ip > conf/.offset
+
+rm conf/server-new-peer
