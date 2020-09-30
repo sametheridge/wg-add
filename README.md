@@ -6,6 +6,6 @@ Usage:
 `./wg-add <number of clients to add>`
 
 Note:
-generates client configs called client.<ip>
-where <ip> is the final octet of the clients IP
-starts at .2 because the server is .1
+generates client configs called `client.<ip>`
+where `<ip>` is the final octet of the clients IP.
+Starts at `.2` because the server is `.1`
