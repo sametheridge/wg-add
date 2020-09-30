@@ -3,6 +3,6 @@ Address = 10.10.0.%IP%/24
 PrivateKey = %PRIV%
 
 [Peer]
-PublicKey = 32Jg+c0kQO9a69wMi4U6CAkmVYoKemCfOHMIvfSaKGM=
+PublicKey = %SERVER_PUBLIC_KEY%
 AllowedIPs = 10.10.0.0/24
-Endpoint = myschoollunch.co.nz:51820
+Endpoint = %SERVER_ENDPOINT%

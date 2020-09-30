@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -eq 0 ]
+if [[ $# -eq 0 ]]
   then
     echo "usage: wg-gen-clients <number>"
     exit 1
@@ -8,11 +8,16 @@ fi
 
 NUM=$1
 
-if ! [ -f _settings ]; then
-  spriv=$(wg genkey)
-  spub=$(echo $spriv | wg pubkey)
+if ! [[ -f _settings ]]; then
   echo "Server endpoint (eg. server.com:21700):"
   read sendp
+
+  echo "Server private key - leave blank to generate:"
+  read spriv
+  [[ -z "$spriv" ]] && spriv=$(wg genkey)
+
+  spub=$(echo $spriv | wg pubkey)
+
   echo "SERVER_ENDPOINT=$sendp
 SERVER_PRIVATE_KEY=$spriv
 SERVER_PUBLIC_KEY=$spub
@@ -21,18 +26,21 @@ fi
 
 source _settings
 
-if [ -f conf/.offset ]
+if [[ -f conf/.offset ]]
   then
-  OFFSET=$(cat conf/offset)
+  OFFSET=$(cat conf/.offset)
 else
   OFFSET=0
 fi
 
 echo generating clients: $NUM offset: $OFFSET
 
-[ -d conf ] || mkdir conf
+[[ -d conf ]] || mkdir conf
 
-[ -f conf/server ] || cat templates/server-interface >> conf/server
+if ! [[ -f conf/server ]]; then
+  cat templates/server-interface >> conf/server
+  perl -p -i -e "s#%SERVER_PRIVATE_KEY%#$SERVER_PRIVATE_KEY#g" conf/server
+fi
 
 for i in $(seq 1 $NUM)
 do
@@ -43,6 +51,8 @@ do
   cp templates/client conf/client$ip
   perl -p -i -e "s#%PRIV%#$priv#g" conf/client$ip
   perl -p -i -e "s/%IP%/$ip/g" conf/client$ip
+  perl -p -i -e "s/%SERVER_ENDPOINT%/$SERVER_ENDPOINT/g" conf/client$ip
+  perl -p -i -e "s#%SERVER_PUBLIC_KEY%#$SERVER_PUBLIC_KEY#g" conf/client$ip
 
   cat templates/server-peer > conf/server-new-peer
   perl -p -i -e "s#%PUB%#$pub#g" conf/server-new-peer

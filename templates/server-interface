@@ -1,5 +1,5 @@
 [Interface]
 Address = 10.10.0.1/24
-PrivateKey = $priv
+PrivateKey = %SERVER_PRIVATE_KEY%
 ListenPort = 51820
 
