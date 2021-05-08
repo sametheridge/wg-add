@@ -16,11 +16,16 @@ if ! [[ -f _settings ]]; then
   read spriv
   [[ -z "$spriv" ]] && spriv=$(wg genkey)
 
+  echo "VPN network - leave blank for auto (eg. for 10.10.0.0)"
+  read network
+  network=$(echo $network | sed 's/\.[0-9]*$//')
+
   spub=$(echo $spriv | wg pubkey)
 
   echo "SERVER_ENDPOINT=$sendp
 SERVER_PRIVATE_KEY=$spriv
 SERVER_PUBLIC_KEY=$spub
+VPN_NETWORK=$network
 " > _settings
 fi
 
@@ -40,6 +45,7 @@ echo generating clients: $NUM offset: $OFFSET
 if ! [[ -f conf/server ]]; then
   cat templates/server-interface >> conf/server
   perl -p -i -e "s#%SERVER_PRIVATE_KEY%#$SERVER_PRIVATE_KEY#g" conf/server
+  perl -p -i -e "s#%VPN_NETWORK%#$VPN_NETWORK#g" conf/server
 fi
 
 for i in $(seq 1 $NUM)
@@ -53,10 +59,12 @@ do
   perl -p -i -e "s/%IP%/$ip/g" conf/client.$ip
   perl -p -i -e "s/%SERVER_ENDPOINT%/$SERVER_ENDPOINT/g" conf/client.$ip
   perl -p -i -e "s#%SERVER_PUBLIC_KEY%#$SERVER_PUBLIC_KEY#g" conf/client.$ip
+  perl -p -i -e "s#%VPN_NETWORK%#$VPN_NETWORK#g" conf/client.$ip
 
   cat templates/server-peer > conf/server-new-peer
   perl -p -i -e "s#%PUB%#$pub#g" conf/server-new-peer
   perl -p -i -e "s/%IP%/$ip/g" conf/server-new-peer
+  perl -p -i -e "s/%VPN_NETWORK%/$VPN_NETWORK/g" conf/server-new-peer
   cat conf/server-new-peer >> conf/server
 done
 

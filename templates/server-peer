@@ -1,4 +1,4 @@
 [Peer]
 PublicKey = %PUB%
-AllowedIPs = 10.10.0.%IP%/32
+AllowedIPs = %VPN_NETWORK%.%IP%/32
 

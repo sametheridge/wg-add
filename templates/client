@@ -1,8 +1,8 @@
 [Interface]
-Address = 10.10.0.%IP%/24
+Address = %VPN_NETWORK%.%IP%/24
 PrivateKey = %PRIV%
 
 [Peer]
 PublicKey = %SERVER_PUBLIC_KEY%
-AllowedIPs = 10.10.0.0/24
+AllowedIPs = %VPN_NETWORK%.0/24
 Endpoint = %SERVER_ENDPOINT%
