@@ -60,6 +60,6 @@ do
   cat conf/server-new-peer >> conf/server
 done
 
-echo $ip > conf/.offset
+echo $(($ip - 1)) > conf/.offset
 
 rm conf/server-new-peer
