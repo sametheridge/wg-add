@@ -9,7 +9,7 @@ fi
 NUM=$1
 
 if ! [[ -f _settings ]]; then
-  echo "Server endpoint (eg. server.com:21700):"
+  echo "Server endpoint (eg. server.com:51820):"
   read sendp
 
   echo "Server private key - leave blank to generate:"
