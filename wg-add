@@ -18,6 +18,7 @@ if ! [[ -f _settings ]]; then
 
   echo "VPN network - leave blank for auto (eg. for 10.10.0.0)"
   read network
+  [[ -z "$network" ]] && network=10.10.0.0
   network=$(echo $network | sed 's/\.[0-9]*$//')
 
   spub=$(echo $spriv | wg pubkey)
